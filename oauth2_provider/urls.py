@@ -32,9 +32,16 @@ management_urlpatterns = [
 
 oidc_urlpatterns = [
     re_path(
-        r"^\.well-known/openid-configuration/$",
+        r"^\.well-known/openid-configuration$",
         views.ConnectDiscoveryInfoView.as_view(),
         name="oidc-connect-discovery-info",
+    ),
+    # this endpoint is deprecated. It is kept for backward compatibility with earlier releases of DOT
+    # which used a trailing slash.
+    re_path(
+        r"^\.well-known/openid-configuration/$",
+        views.ConnectDiscoveryInfoView.as_view(),
+        name="oidc-connect-discovery-info-deprecated",
     ),
     re_path(r"^\.well-known/jwks.json$", views.JwksInfoView.as_view(), name="jwks-info"),
     re_path(r"^userinfo/$", views.UserInfoView.as_view(), name="user-info"),
