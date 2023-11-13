@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * #1311 Add option to disable client_secret hashing to allow verifying JWTs' signatures.
 * #1337 Gracefully handle expired or deleted refresh tokens, in `validate_user`.
 * #1350 Support Python 3.12 and Django 5.0
+* #1249 Add code_challenge_methods_supported property to auto discovery informations
 
 ### Fixed
 * #1322 Instructions in documentation on how to create a code challenge and code verifier
