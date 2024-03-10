@@ -72,12 +72,21 @@ class TestConnectDiscoveryInfoView(TestCase):
                 "code id_token",
                 "code id_token token",
             ],
+        expected_response = {
+            "issuer": "http://testserver/o",
+            "authorization_endpoint": "http://testserver/o/authorize/",
+            "token_endpoint": "http://testserver/o/token/",
+            "userinfo_endpoint": "http://testserver/o/userinfo/",
+            "jwks_uri": "http://testserver/o/jwks/",
+            "response_types_supported": ["code"],
             "subject_types_supported": ["public"],
             "id_token_signing_alg_values_supported": ["RS256", "HS256"],
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
             "claims_supported": ["sub"],
         }
         response = self.client.get("/o/.well-known/openid-configuration/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected_response)
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
 
