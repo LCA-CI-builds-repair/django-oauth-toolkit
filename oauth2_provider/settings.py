@@ -292,13 +292,14 @@ class OAuth2ProviderSettings:
             django_request.META = request.headers
             if request.headers.get("X_DJANGO_OAUTH_TOOLKIT_SECURE", False):
                 django_request._scheme = "https"
+```python
         else:
             raise TypeError("request must be a django or oauthlib request: got %r" % request)
         abs_url = django_request.build_absolute_uri(reverse("oauth2_provider:oidc-connect-discovery-info"))
-        return abs_url[: -len("/.well-known/openid-configuration/")]
-
-
-oauth2_settings = OAuth2ProviderSettings(USER_SETTINGS, DEFAULTS, IMPORT_STRINGS, MANDATORY)
+        # Fixed OIDC issuer URL to include '/o'
+        oidc_issuer_base_path = "/o/.well-known/openid-configuration"
+        return abs_url[: -len(oidc_issuer_base_path)] + '/o'
+```
 
 
 def reload_oauth2_settings(*args, **kwargs):
