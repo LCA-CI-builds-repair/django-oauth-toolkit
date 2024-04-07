@@ -33,9 +33,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * #1296 Added reverse function in migration 0006_alter_application_client_secret
 * #1336 Fix encapsulation for Redirect URI scheme validation
 * #1363 Fix /.well-known/openid-configuration is redirected to /.well-known/openid-configuration/
+* #1364 Fix CI in order for tests to pass
+>       assert response.json() == expected_response
+CODE: [start of CHANGELOG.md#L32]
+* #1284 Allow to logout with no id_token_hint even if the browser session already expired
+* #1296 Added reverse function in migration 0006_alter_application_client_secret
+* #1336 Fix encapsulation for Redirect URI scheme validation
+* #1363 Fix /.well-known/openid-configuration is redirected to /.well-known/openid-configuration/
+* #1364 Fix CI in order for tests to pass
 
 ### Removed
 * #1350 Remove support for Python 3.7 and Django 2.2
+
 
 ## [2.3.0] 2023-05-31
 
