@@ -72,11 +72,10 @@ class TestConnectDiscoveryInfoView(TestCase):
                 "code id_token",
                 "code id_token token",
             ],
-            "subject_types_supported": ["public"],
-            "id_token_signing_alg_values_supported": ["RS256", "HS256"],
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
             "claims_supported": ["sub"],
         }
++       "code_challenge_methods_supported": ["plain", "S256"],
         response = self.client.get("/o/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
