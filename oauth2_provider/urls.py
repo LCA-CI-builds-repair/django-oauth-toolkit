@@ -46,6 +46,9 @@ oidc_urlpatterns = [
     re_path(r"^\.well-known/jwks.json$", views.JwksInfoView.as_view(), name="jwks-info"),
     re_path(r"^userinfo/$", views.UserInfoView.as_view(), name="user-info"),
     re_path(r"^logout/$", views.RPInitiatedLogoutView.as_view(), name="rp-initiated-logout"),
+    
+    # Add a trailing slash to the URL pattern
+]
 ]
 
 
