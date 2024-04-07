@@ -77,7 +77,24 @@ class TestConnectDiscoveryInfoView(TestCase):
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
             "claims_supported": ["sub"],
         }
+
         response = self.client.get("/o/.well-known/openid-configuration/")
+        self.assertEqual(response.status_code, 200)
+        expected_response = response.json()
+
+        # Check if both responses have the same keys and values, ignoring order
+        self.assertDictEqual(expected_response, {
+            "issuer": "http://localhost:8000/o",
+            "authorization_endpoint": "http://localhost:8000/o/login/",
+            "token_endpoint": "http://localhost:8000/o/token/",
+            "jwks_uri": "http://localhost:8000/o/.well-known/jwks.json/",
+            "userinfo_endpoint": "http://localhost:8000/o/userinfo/",
+            "subject_types_supported": ["public"],
+            "id_token_signing_alg_values_supported": ["RS256", "HS256"],
+            "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
+            "claims_supported": ["sub"],
+            'code_challenge_methods_supported': ['plain', 'S256']
+        })
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
 
