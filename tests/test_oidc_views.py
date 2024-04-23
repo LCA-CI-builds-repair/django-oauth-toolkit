@@ -1,6 +1,137 @@
 import pytest
 from django.contrib.auth import get_user
-from django.contrib.auth.models import AnonymousUser
+        response_data = response.json(        response = self.client.get("/o/.well        response = self.client.get(reverse("oauth2_        response_data = response.json()
+             response = self.        response_data =        response = self.client.get(reverse("oauth2_provider:jwks-info"))
+        self.assertEqual(response.status_code, 200)
+        
+        response_data = response.json()
+        expected_response = {
+            'keys': [
+                {
+                    "kty": "RSA",
+                    "alg": "RS256",
+                    "kid": "12345",
+                    "n": "rsa_modulus_value",
+                    "e": "AQAB"
+                }
+            ]
+        }
+     assert AccessToken.ob    assert AccessToken.objects.count() == 1
+    assert IDT    assert not any([token.is_expired() for token in IDToken.objects.all()])
+    assert RefreshToken.objects.count() == 1
+    assert not any([token.revoked is not None for token in RefreshToken.objects.all()])objects.count() == 1
+    assert RefreshToken.objects.count() == 1
+    
+    rsp = client.get(reverse("oauth2_provider:rp-initiated-logout"), data={"id_token_hint": oidc_tokens.id_token})ount() == 1
+    assert IDToken.objects.count() == 1
+    assert RefreshToken.objects.count() == 1
+    
+    rsp = logged_in_client.get(reverse("oauth2_provider:rp-initiated-logout"))
+    data = {
+        # Add any required data for the RP-initiated logout endpoint
+    } 
+        assert response_data['keys'][0]['kty'] == expected_response['keys'][0]['kty']
+        assert response_data['keys'][0]['alg'] == expected_response['keys'][0]['alg']
+        assert response_data['keys'][0]['kid'] == expected_response['keys'][0]['kid']
+        assert response_data['keys'][0]['n'] == expected_response['keys'][0]['n']
+        assert response_data['keys'][0]['e'] == expected_response['keys'][0]['e']e.json()
+        expected_response = {
+            "keys": []
+        }
+        
+        assert response_data["keys"] == expected_response["keys"]ent.get(reverse("oauth2_provider:jwks-info"))
+        self.assertEqual(response.status_code, 200)
+        
+        response_data = response.json()
+        expected_response = {
+            'keys': [
+                {
+                    "kty": "RSA",
+                    "alg": "RS256",
+                    "kid": "12345",
+                    "n": "rsa_modulus_value",
+                    "e": "AQAB"
+                }
+            ]
+        }
+        
+        assert response_data['keys'][0]['kty'] == expected_response['keys'][0]['kty']
+        assert response_data['keys'][0]['alg'] == expected_response['keys'][0]['alg']
+        assert response_data['keys'][0]['kid'] == expected_response['keys'][0]['kid']
+        assert response_data['keys'][0]['n'] == expected_response['keys'][0]['n']
+        assert response_data['keys'][0]['e'] == expected_response['keys'][0]['e']cted_response = {
+            'authorization_endpoint': 'http://localhost/o',
+            'token_endpoint': 'http://localhost/o/token',
+            'userinfo_endpoint': 'http://localhost/o/userinfo',
+            'end_session_endpoint': 'http://localhost/o/logout',
+            'jwks_uri': 'http://localhost/o/jwks',
+            'scopes_supported': ['openid', 'profile', 'email'],
+            'response_types_supported': ['code', 'id_token', 'token'],
+            'grant_types_supported': ['authorization_code', 'implicit'],
+            'subject_types_supported': ['public'],
+            'userinfo_signing_alg_values_supported': ['RS256'],
+            'id_token_signing_alg_values_supported': ['RS256', 'HS256'],
+            'code_challenge_methods_supported': ['plain', 'S256']
+        }
+        
+        for key, value in expected_response.items():
+            assert response_data.get(key) == valuevider:oidc-connect-discovery-info"))
+        self.assertEqual(response.status_code, 200)
+        
+        response_data = response.json()
+        expected_response = {
+            'authorization_endpoint': 'http://localhost/o',
+            'token_endpoint': 'http://localhost/o/token',
+            'userinfo_endpoint': 'http://localhost/o/userinfo',
+            'end_session_endpoint': 'http://localhost/o/logout',
+            'jwks_uri': 'http://localhost/o/jwks',
+            'scopes_supported': ['openid', 'profile', 'email'],
+            'response_types_supported': ['code', 'id_token', 'token'],
+            'grant_types_supported': ['authorization_code', 'implicit'],
+            'subject_types_supported': ['public'],
+            'userinfo_signing_alg_values_supported': ['RS256'],
+            'id_token_signing_alg_values_supported': ['RS256', 'HS256'],
+            'code_challenge_methods_supported': ['plain', 'S256']
+        }
+        
+        for key, value in expected_response.items():
+            assert response_data.get(key) == valuen/openid-configuration/")
+        self.assertEqual(response.status_code, 200)
+        
+        response_data = response.json()
+        expected_response = {
+            'authorization_endpoint': 'http://localhost/o',
+            'token_endpoint': 'http://localhost/o/token',
+            'userinfo_endpoint': 'http://localhost/o/userinfo',
+            'end_session_endpoint': 'http://localhost/o/logout',
+            'jwks_uri': 'http://localhost/o/jwks',
+            'scopes_supported': ['openid', 'profile', 'email'],
+            'response_types_supported': ['code', 'id_token', 'token'],
+            'grant_types_supported': ['authorization_code', 'implicit'],
+            'subject_types_supported': ['public'],
+            'userinfo_signing_alg_values_supported': ['RS256'],
+            'id_token_signing_alg_values_supported': ['RS256', 'HS256'],
+            'code_challenge_methods_supported': ['plain', 'S256']
+        }
+        
+        for key, value in expected_response.items():
+            assert response_data.get(key) == value    expected_response = {
+            'authorization_endpoint': 'http://localhost/o',
+            'token_endpoint': 'http://localhost/o/token',
+            'userinfo_endpoint': 'http://localhost/o/userinfo',
+            'end_session_endpoint': 'http://localhost/o/logout',
+            'jwks_uri': 'http://localhost/o/jwks',
+            'scopes_supported': ['openid', 'profile', 'email'],
+            'response_types_supported': ['code', 'id_token', 'token'],
+            'grant_types_supported': ['authorization_code', 'implicit'],
+            'subject_types_supported': ['public'],
+            'userinfo_signing_alg_values_supported': ['RS256'],
+            'id_token_signing_alg_values_supported': ['RS256', 'HS256'],
+            'code_challenge_methods_supported': ['plain', 'S256']
+        }
+        
+        for key, value in expected_response.items():
+            assert response_data.get(key) == valuem django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone

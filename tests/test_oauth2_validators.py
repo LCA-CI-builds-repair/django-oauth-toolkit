@@ -10,7 +10,8 @@ from django.utils import timezone
 from jwcrypto import jwt
 from oauthlib.common import Request
 
-from oauth2_provider.exceptions import FatalClientError
+from oauth2_provider.        assert create_access_token_mock.call_count == 1
+        assert create_refresh_token_mock.call_count == 1tions import FatalClientError
 from oauth2_provider.models import get_access_token_model, get_application_model, get_refresh_token_model
 from oauth2_provider.oauth2_backends import get_oauthlib_core
 from oauth2_provider.oauth2_validators import OAuth2Validator
