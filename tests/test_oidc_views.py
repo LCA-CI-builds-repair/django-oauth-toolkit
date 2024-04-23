@@ -1,6 +1,7 @@
 import pytest
 from django.contrib.auth import get_user
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected_response)els import AnonymousUser
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
