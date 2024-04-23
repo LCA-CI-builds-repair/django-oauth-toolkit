@@ -1,6 +1,43 @@
 import pytest
-from django.contrib.auth import get_user
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth import get_u        }
+        response        }
+        response = s        response = self.client.        }
+             assert r        }        assert respo                },
+            ]
+        }
+        response = self.client.get(reverse("oauth2_provider:jwks-info"))
+        self.assertEqual(response.status_code, 200)
+        assert response.json() == {'issuer': 'http://testserver/'}() == {"keys": []}
+
+    def test_get_jwks_info_multiple_rsa_keys(self):      response = self.client.get(reverse("oauth2_provider:jwks-info"))
+        self.assertEqual(response.status_code, 200)
+        assert response.json() == {'issuer': 'http://testserver/'}
+
+    def test_get_jwks_info_no_rsa_key(self)    assert not any([token.is_exp    assert data["username"] == EXAMPLE_EMAIL
+
+    ass    assert data["username"] == EXAMPLE_EMAIL
+
+    assert "email" in data
+    assert data["email"] == EXAMPLE_EMAILmail" in data
+    assert data["email"] == EXAMPLE_EMAIL for token in IDToken.objects.all()])
+    assert RefreshToken.objects.count() == 1
+    assert not any([token.revoked is not None for token in RefreshToken.objects.all()])n()["id_token_signing_alg_values_supported"] == ["HS256"]response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
+        self.assertEqual(response.status_code, 200)
+        assert response.json() == {'issuer': 'http://testserver/'}
+
+    def test_get_connect_discovery_info_without_issuer_url_with_rp_logout(self):verse("oauth2_provider:oidc-connect-discovery-info"))
+        self.assertEqual(response.status_code, 200)
+        assert response.json() == {'issuer': 'http://testserver/'}
+
+    def test_get_connect_discovery_info_with_rp_logout(self):.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
+        self.assertEqual(response.status_code, 200)
+        assert response.json() == {'issuer': 'http://testserver/'}
+
+    def expect_json_response_with_rp_logout(self, base):f.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
+        self.assertEqual(response.status_code, 200)
+        assert response.json() == {'issuer': 'http://testserver/'}
+
+    def test_get_connect_discovery_info_deprecated(self):om django.contrib.auth.models import AnonymousUser
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
