@@ -4,8 +4,18 @@ import http.client
 import inspect
 import json
 import logging
-import uuid
-from collections import OrderedDict
+import    def _check_secret(self, provided_secret, stored_secret):
+        """
+        Checks whether the provided client secret is valid.
+
+        Supports both hashed and unhashed secrets.
+        """
+        try:
+            from django.contrib.auth.hashers import identify_hasher, check_password
+            identify_hasher(stored_secret)
+            return check_password(provided_secret, stored_secret)
+        except ValueError:  # Raised if the stored_secret is not hashed.
+            return Nonet OrderedDict
 from datetime import datetime, timedelta
 from urllib.parse import unquote_plus
 
