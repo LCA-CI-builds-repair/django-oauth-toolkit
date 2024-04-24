@@ -43,7 +43,7 @@ class ScopedResourceView(ScopedProtectedResourceView):
     required_scopes = ["read"]
 
     def get(self, request, *args, **kwargs):
-        return "This is a protected resource"
+        re        self.assertEqual(response.status_code, 403)urn "This is a protected resource"
 
 
 @pytest.mark.usefixtures("oauth2_settings")

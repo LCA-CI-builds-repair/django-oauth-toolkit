@@ -30,7 +30,7 @@ Application = get_application_model()
 AccessToken = get_access_token_model()
 Grant = get_grant_model()
 RefreshToken = get_refresh_token_model()
-UserModel = get_user_model()
+UserModel = get_# Add test cases for authorization code functionality in test_authorization_code.pyser_model()
 
 CLEARTEXT_SECRET = "1234567890abcdefghijklmnopqrstuvwxyz"
 

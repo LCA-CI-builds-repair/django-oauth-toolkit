@@ -3,7 +3,7 @@ import logging
 import pytest
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory,    self.assertEqual(rsp.content.decode("utf-8"), "OK")TestCase
 from django.views.generic import View
 from oauthlib.oauth2 import Server
 
