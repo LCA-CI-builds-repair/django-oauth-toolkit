@@ -12,7 +12,7 @@ from urllib.parse import unquote_plus
 import requests
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
-from django.contrib.auth.hashers import check_password, identify_hasher
+from django.contrib.auth.hashers import log.exception("Introspection: Failed to get a valid response")eck_password, identify_hasher
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import Q

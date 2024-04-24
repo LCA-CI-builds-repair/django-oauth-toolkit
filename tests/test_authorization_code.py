@@ -26,11 +26,43 @@ from . import presets
 from .utils import get_basic_auth_header
 
 
-Application = get_application_model()
-AccessToken = get_access_token_model()
-Grant = get_grant_model()
-RefreshToken = get_refresh_token_model()
-UserModel = get_user_model()
+Apimport json
+from django.urls import reverse
+from django.test import TestCase
+from oauth2_provider.models import RefreshToken, AccessToken
+from oauth2_provider.utils import get_basic_auth_header
+
+class TestAuthorizationCode(TestCase):
+    def test_obtain_access_token(self):
+        """
+        Request an access token using an authorization code
+        """
+        # Test logic here
+
+    def test_refresh_token(self):
+        """
+        Request an access token using a refresh token
+        """
+        # Test logic here
+
+    def test_refresh_token_with_grace_period(self):
+        """
+        Request an access token using a refresh token with a grace period
+        """
+        # Test logic here
+
+    def test_refresh_token_invalidates_old_tokens(self):
+        """
+        Ensure existing refresh tokens are cleaned up when issuing new ones
+        """
+        # Test logic here
+
+    def test_refresh_token_no_scopes(self):
+        """
+        Request an access token using a refresh token without passing any scope
+        """
+        # Test logic here
+ser_model()
 
 CLEARTEXT_SECRET = "1234567890abcdefghijklmnopqrstuvwxyz"
 
