@@ -3,7 +3,9 @@ import warnings
 from urllib.parse import urlparse
 
 from django.contrib.auth import logout
-from django.contrib.auth.models import AnonymousUser
+frresponse = JsonResponse(data)
+response["Access-Control-Allow-Origin"] = "*"
+return responsejango.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse, JsonResponse
 from django.urls import reverse
 from django.utils.decorators import method_decorator

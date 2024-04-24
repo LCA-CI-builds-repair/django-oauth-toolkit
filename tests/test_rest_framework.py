@@ -6,8 +6,100 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpResponse
 from django.test import TestCase
-from django.test.utils import override_settings
-from django.urls import path, re_path
+from django.test.utils iclass TestOAuth2ResourceScoped(TestCase):
+    def setUp(self):
+        self.access_tokclass TestOAuth2MethodScope(TestCase):
+    def setUp(self):
+        self.access_token = AccessToken.objects.create()
+
+    def _create_authorization_header(self, token):
+        return f"Bearer {token}"
+
+    def test_method_scope_alt_permission_get_deny(self):
+        self.access_token.scope = "read"
+        self.access_token.save()
+
+        auth = self._create_authorization_header(self.access_token.token)
+        response = self.client.get("/oauth2-method-scope-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response.status_code, 403)
+
+    def test_method_scope_alt_permission_post_deny(self):
+        self.access_token.scope = "read"
+        self.access_token.save()
+
+        auth = self._create_authorization_header(self.access_token.token)
+        response = self.client.post("/oauth2-method-scope-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response.status_code, 403)
+
+    def test_method_scope_alt_no_token(self):
+        self.access_token.scope = ""
+        self.access_token.save()
+
+        auth = self._create_authorization_header(self.access_token.token)
+        self.access_token = None
+        response = self.client.post("/oauth2-method-scope-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response.status_code, 403)jects.create()
+        self.oauth2_settings = OAuth2Settings()
+
+    def _create_authorization_header(self, token):
+        return f"Bearer {token}"
+
+    def test_resource_scoped_permissions(self):
+        self.access_token.scope = "resource1:write"
+        self.access_token.save()
+
+        auth = self._create_authorization_header(self.access_token.token)
+
+        response_get = self.client.get("/oauth2-resource-scoped-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response_get.status_code, 200)
+
+        response_post_allow = self.client.post("/oauth2-resource-scoped-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response_post_allow.status_code, 200)
+
+        self.access_token.scope = "resource1:read"
+        self.access_token.save()
+
+        response_post_denied = self.client.post("/oauth2-resource-scoped-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response_post_denied.status_code, 403)
+
+        response_get_denied = self.client.get("/oauth2-resource-scoped-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response_get_denied.status_code, 403)
+
+    def test_required_scope_in_response(self):
+        self.oauth2_settings.ERROR_RESPONSE_WITH_SCOPES = True
+        self.access_token.scope = "scope2"
+        self.access_token.save()
+
+        auth = self._create_authorization_header(self.access_token.token)
+
+        response = self.client.get("/oauth2-scoped-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["required_scopes"], ["scope1", "another"])
+
+    def test_required_scope_not_in_response_by_default(self):
+        self.access_token.scope = "scope2"
+        self.access_token.save()
+
+        auth = self._create_authorization_header(self.access_token.token)
+
+        response = self.client.get("/oauth2-scoped-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response.status_code, 403)
+        self.assertNotIn("required_scopes", response.data)
+
+    def test_method_scope_alt_permissions(self):
+        self.access_token.scope = "read"
+        self.access_token.save()
+
+        auth = self._create_authorization_header(self.access_token.token)
+
+        response_get_allow = self.client.get("/oauth2-method-scope-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response_get_allow.status_code, 200)
+
+        self.access_token.scope = "create"
+        self.access_token.save()
+
+        response_post_allow = self.client.post("/oauth2-method-scope-test/", HTTP_AUTHORIZATION=auth)
+        self.assertEqual(response_post_allow.status_code, 200)
 from django.utils import timezone
 from rest_framework import permissions
 from rest_framework.authentication import BaseAuthentication

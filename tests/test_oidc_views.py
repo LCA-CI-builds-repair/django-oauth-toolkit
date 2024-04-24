@@ -1,6 +1,151 @@
 import pytest
 from django.contrib.auth import get_user
-from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.        self.assertEqual(    def expect_json_response_with_rp_logout(self, base):
+        expected_response = {
+            "issuer": f"{base        }
+        response = self.client.get(reverse("oauth2_provider:jwks-info"))
+        self.assertEqual(response.status_code, 200)
+        assert response.json() == expected_response         "authorization_endpoint": f"{base}/authorize/",
+            "token_endpoint": f"{base}/token/",
+            "userinfo_endpoint": f"{base}/userinfo/",
+            "jwks_uri": f"{base}/.well-known/jwks.json",
+            "scopes_supported": ["read", "write",from django.utils import tifrom django.urls import reverse
+from oauth2_provifrom django.urls import reverse
+from oauth2_provider.models import get_access_token_mfrom django.urls import reverse
+from oauth2_provider.oauth2_validators import OAuth2Validator
+
+EXAMPLE_EMAIL = "example@example.com"  # Example email for testing purposes
+
+def test_userinfo_endpoint_custom_claims_plain(oidc_tokens, client, oauth2_settings):
+    class CustomValidator(OAuth2Validator):
+        oidc_claim_scope = None
+
+        def get_additional_claims(self, request):
+            return {
+                "username": EXAMPLE_EMAIL,
+                "email": EXAMPLE_EMAIL,
+            }
+
+    oidc_tokens.oauth2_settings.OAUTH2_VALIDATOR_CLASS = CustomValidator
+    auth_header = "Bearer %s" % oidc_tokens.access_token
+    rsp = client.get(
+        reverse("oauth2_provider:user-info"),
+        HTTP_AUTHORIZATION=auth_header,
+    )
+    data = rsp.json()
+    assert "sub" in data
+    assert data["sub"] == str(oidc_tokens.user.pk)
+
+    assert "username" in data
+    assert data["username"] == EXAMPLE_EMAIL
+
+    assert "email" in data
+    assert data["email"] == EXAMPLE_EMAILefresh_token_model
+
+def test_token_deletion_on_logout(oidc_tokens, logged_in_client, rp_settings):
+    AccessToken = get_access_token_model()
+    IDToken = get_id_token_model()
+    RefreshToken = get_refresh_token_model()
+    assert AccessToken.objects.count() == 1
+    assert IDToken.objects.count() == 1
+    assert RefreshToken.objects.count() == 1
+    rsp = logged_in_client.get(
+        reverse("oauth2_provider:rp-initiated-logout"),
+        data={
+            "id_token_hint": oidc_tokens.id_token,
+            "client_id": oidc_tokens.application.client_id,
+        },
+    )
+    assert rsp.status_code == 302
+    assert not is_logged_in(logged_in_client)
+    # Check that the tokens have not been expired or deleted.
+    assert AccessToken.objects.count() == 1
+    assert not any([token.is_expired() for token in AccessToken.objects.all()])
+    assert IDToken.objects.count() == 1
+    assert not any([token.is_expired() for token in IDToken.objects.all()])
+    assert RefreshToken.objects.count() == 1
+    assert not any([token.revoked is not None for token in RefreshToken.objects.all()])_access_token_model, get_id_token_model, get_refresh_token_model
+
+def test_token_deletion_on_logout_expired_session(oidc_tokens, client, rp_settings):
+    AccessToken = get_access_token_model()
+    IDToken = get_id_token_model()
+    RefreshToken = get_refresh_token_model()
+    assert AccessToken.objects.count() == 1
+    assert IDToken.objects.count() == 1
+    assert RefreshToken.objects.count() == 1
+    rsp = client.get(
+        reverse("oauth2_provider:rp-initiated-logout"),
+        data={
+            "id_token_hint": oidc_tokens.id_token,
+            "client_id": oidc_tokens.application.client_id,
+        },
+    )
+    assert rsp.status_code == 200
+    assert not is_logged_in(client)
+    # Check that all tokens are active.
+    access_token = AccessToken.objects.get()
+    assert not access_token.is_expired()
+    id_token = IDToken.objects.get()
+    assert not id_token.is_expired()
+    refresh_token = RefreshToken.objects.get()
+    assert refresh_token.revoked is None import reverse
+from oauth2_provider.models import get_access_token_model, get_id_token_model, get_refresh_token_model
+
+def test_token_deletion_on_logout(oidc_tokens, logged_in_client, rp_settings):
+    AccessToken = get_access_token_model()
+    IDToken = get_id_token_model()
+    RefreshToken = get_refresh_token_model()
+    assert AccessToken.objects.count() == 1
+    assert IDToken.objects.count() == 1
+    assert RefreshToken.objects.count() == 1
+    rsp = logged_in_client.get(
+        reverse("oauth2_provider:rp-initiated-logout"),
+        data={
+            "id_token_hint": oidc_tokens.id_token,
+            "client_id": oidc_tokens.application.client_id,
+        },
+    )
+    assert rsp.status_code == 302
+    assert not is_logged_in(logged_in_client)
+    # Check that all tokens have either been deleted or expired.
+    assert all([token.is_expired() for token in AccessToken.objects.all()])
+    assert all([token.is_expired() for token in IDToken.objects.all()])
+    assert all([token.revoked is not None or token.revoked <= timezone.now() for token in RefreshToken.objects.all()])    "response_types_supported": [
+                "code",
+                "token",
+                "id_token",
+                "id_token token",
+                "code token",
+                "code id_token",
+                "code id_token token",
+            ],
+            "claims_supported": ["sub"],
+            "end_session_endpoint": f"{base}/logout/",
+        }
+        
+        response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
+        self.assertEqual(response.status_code, 200)
+        assert response.json() == expected_responsese.status_code, 200)
+        assert response.json() == expected_response
+
+    def expect_json_response_with_rp_logout(self, base):
+        expected_response = {
+            "issuer": f"{base}",
+            "authorization_endpoint": f"{base}/authorize/",
+            "token_endpoint": f"{base}/token/",
+            "userinfo_endpoint": f"{base}/userinfo/",
+            "jwks_uri": f"{base}/.well-known/jwks.json",
+            "scopes_supported": ["read", "write", "openid"],
+            "response_types_supported": [
+                "code",
+                "token",
+                "id_token",
+                "id_token token",
+                "code token",
+                "code id_token",
+                "code id_token token",
+            ],
+        }ousUser
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone

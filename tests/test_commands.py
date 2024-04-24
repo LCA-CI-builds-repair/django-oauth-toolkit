@@ -2,7 +2,37 @@ from io import StringIO
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.contrib.auth.hashers import check_password
+from django.contfrom django.contrib.auth import get_user_model
+from django.core.management import call_command
+from your_app.models import Application  # Import the Application model from your app
+
+def test_application_created_with_user():
+    User = get_user_model()
+    user = User.objects.create_user(username="test_user", password="password")  # Use create_user() to create a user
+    call_command(
+        "createapplication",
+        "confidential",
+        "authorization-code",
+        "--redirect-uris=http://example.com http://example2.com",
+        "--user=%s" % user.pk,
+    )
+    app = Application.objects.get(user=user)  # Filter by user to match the created user
+
+    assert app.user == user  # Assert that the user of the application is the created user
+
+@pytest.mark.usefixtures("oauth2_settings")
+@pytest.mark.oauth2_settings(presets.OIDC_SETTINGS_RW)
+def test_application_created_with_algorithm():
+    call_command(
+        "createapplication",
+        "confidential",
+        "authorization-code",
+        "--redirect-uris=http://example.com http://example2.com",
+        "--algorithm=RS256",
+    )
+    app = Application.objects.get()
+
+    assert app.algorithm == "RS256"  # Assert the algorithm used for the applicationck_password
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
