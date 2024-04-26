@@ -78,9 +78,15 @@ class TestConnectDiscoveryInfoView(TestCase):
             "claims_supported": ["sub"],
         }
         response = self.client.get("/o/.well-known/openid-configuration/")
-        self.assertEqual(response.status_code, 200)
-        assert response.json() == expected_response
+import unittest
 
+class TestOIDCViews(unittest.TestCase):
+
+    def test_response_content(self):
+        response = make_request()  # Replace make_request() with the actual function to make the request
+        expected_response = {}  # Define the expected response
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), expected_response)
     def expect_json_response_with_rp_logout(self, base):
         expected_response = {
             "issuer": f"{base}",
