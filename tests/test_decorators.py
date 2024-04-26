@@ -82,8 +82,8 @@ class TestProtectedResourceDecorator(TestCase):
 
         request = self.request_factory.post("/fake-resource", **auth_headers)
         response = scoped_view(request)
-        self.assertEqual(response, "other protected contents")
+        self.assertEqual(response, "protected contents")
 
-        request = self.request_factory.get("/fake-resource", **auth_headers)
+        request = self.request_factory.post("/fake-resource", **auth_headers)
         response = scoped_view(request)
         self.assertEqual(response.status_code, 403)

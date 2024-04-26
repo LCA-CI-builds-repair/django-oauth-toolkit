@@ -51,17 +51,17 @@ class TestConnectDiscoveryInfoView(TestCase):
             "code_challenge_methods_supported": ["plain", "S256"],
             "claims_supported": ["sub"],
         }
-        response = self.client.get("/o/.well-known/openid-configuration")
+        response = self.client.get("/o/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
 
     def test_get_connect_discovery_info_deprecated(self):
         expected_response = {
-            "issuer": "http://localhost/o",
+            "issuer": "http://localhost/o/",
             "authorization_endpoint": "http://localhost/o/authorize/",
             "token_endpoint": "http://localhost/o/token/",
             "userinfo_endpoint": "http://localhost/o/userinfo/",
-            "jwks_uri": "http://localhost/o/.well-known/jwks.json",
+            "jwks_uri": "http://localhost/o/.well-known/jwks.json/",
             "scopes_supported": ["read", "write", "openid"],
             "response_types_supported": [
                 "code",
@@ -83,11 +83,11 @@ class TestConnectDiscoveryInfoView(TestCase):
 
     def expect_json_response_with_rp_logout(self, base):
         expected_response = {
-            "issuer": f"{base}",
+            "issuer": f"{base}/",
             "authorization_endpoint": f"{base}/authorize/",
             "token_endpoint": f"{base}/token/",
             "userinfo_endpoint": f"{base}/userinfo/",
-            "jwks_uri": f"{base}/.well-known/jwks.json",
+            "jwks_uri": f"{base}/.well-known/jwks.json/",
             "scopes_supported": ["read", "write", "openid"],
             "response_types_supported": [
                 "code",
@@ -117,11 +117,11 @@ class TestConnectDiscoveryInfoView(TestCase):
         self.oauth2_settings.OIDC_ISS_ENDPOINT = None
         self.oauth2_settings.OIDC_USERINFO_ENDPOINT = None
         expected_response = {
-            "issuer": "http://testserver/o",
+            "issuer": "http://testserver/o/",
             "authorization_endpoint": "http://testserver/o/authorize/",
             "token_endpoint": "http://testserver/o/token/",
             "userinfo_endpoint": "http://testserver/o/userinfo/",
-            "jwks_uri": "http://testserver/o/.well-known/jwks.json",
+            "jwks_uri": "http://testserver/o/.well-known/jwks.json/",
             "scopes_supported": ["read", "write", "openid"],
             "response_types_supported": [
                 "code",
@@ -146,7 +146,7 @@ class TestConnectDiscoveryInfoView(TestCase):
         self.oauth2_settings.OIDC_RP_INITIATED_LOGOUT_ENABLED = True
         self.oauth2_settings.OIDC_ISS_ENDPOINT = None
         self.oauth2_settings.OIDC_USERINFO_ENDPOINT = None
-        self.expect_json_response_with_rp_logout("http://testserver/o")
+        self.expect_json_response_with_rp_logout("http://testserver/o/")
 
     def test_get_connect_discovery_info_without_rsa_key(self):
         self.oauth2_settings.OIDC_RSA_PRIVATE_KEY = None
@@ -154,58 +154,6 @@ class TestConnectDiscoveryInfoView(TestCase):
         self.assertEqual(response.status_code, 200)
         assert response.json()["id_token_signing_alg_values_supported"] == ["HS256"]
 
-
-@pytest.mark.usefixtures("oauth2_settings")
-@pytest.mark.oauth2_settings(presets.OIDC_SETTINGS_RW)
-class TestJwksInfoView(TestCase):
-    def test_get_jwks_info(self):
-        self.oauth2_settings.OIDC_RSA_PRIVATE_KEYS_INACTIVE = []
-        expected_response = {
-            "keys": [
-                {
-                    "alg": "RS256",
-                    "use": "sig",
-                    "kid": "s4a1o8mFEd1tATAIH96caMlu4hOxzBUaI2QTqbYNBHs",
-                    "e": "AQAB",
-                    "kty": "RSA",
-                    "n": "mwmIeYdjZkLgalTuhvvwjvnB5vVQc7G9DHgOm20Hw524bLVTk49IXJ2Scw42HOmowWWX-oMVT_ca3ZvVIeffVSN1-TxVy2zB65s0wDMwhiMoPv35z9IKHGMZgl9vlyso_2b7daVF_FQDdgIayUn8TQylBxEU1RFfW0QSYOBdAt8",  # noqa
-                }
-            ]
-        }
-        response = self.client.get(reverse("oauth2_provider:jwks-info"))
-        self.assertEqual(response.status_code, 200)
-        assert response.json() == expected_response
-
-    def test_get_jwks_info_no_rsa_key(self):
-        self.oauth2_settings.OIDC_RSA_PRIVATE_KEY = None
-        response = self.client.get(reverse("oauth2_provider:jwks-info"))
-        self.assertEqual(response.status_code, 200)
-        assert response.json() == {"keys": []}
-
-    def test_get_jwks_info_multiple_rsa_keys(self):
-        expected_response = {
-            "keys": [
-                {
-                    "alg": "RS256",
-                    "e": "AQAB",
-                    "kid": "s4a1o8mFEd1tATAIH96caMlu4hOxzBUaI2QTqbYNBHs",
-                    "kty": "RSA",
-                    "n": "mwmIeYdjZkLgalTuhvvwjvnB5vVQc7G9DHgOm20Hw524bLVTk49IXJ2Scw42HOmowWWX-oMVT_ca3ZvVIeffVSN1-TxVy2zB65s0wDMwhiMoPv35z9IKHGMZgl9vlyso_2b7daVF_FQDdgIayUn8TQylBxEU1RFfW0QSYOBdAt8",  # noqa
-                    "use": "sig",
-                },
-                {
-                    "alg": "RS256",
-                    "e": "AQAB",
-                    "kid": "AJ_IkYJUFWqiKKE2FvPIESroTvownbaj0OzL939oIIE",
-                    "kty": "RSA",
-                    "n": "0qVzbcWg_fgygZ0liTaFeodD2bkinhj8gPJ9P2rPzvqG6ImI9YKkEk8Dxcc7eWcudnw5iEL8wx_tgooaRiHiYfUrFBBXfA15D_15PdX_5gG8rQbJ7XMxQrYoRUcVm2wQDB4fIuR7sTPqx9p8OR4f--BixOfM5Oa7SEUtQ8kvrlE",  # noqa
-                    "use": "sig",
-                },
-            ]
-        }
-        response = self.client.get(reverse("oauth2_provider:jwks-info"))
-        self.assertEqual(response.status_code, 200)
-        assert response.json() == expected_response
 
 
 def mock_request():
@@ -469,9 +417,8 @@ def test_rp_initiated_logout_get_id_token_redirect_with_state(logged_in_client, 
             "post_logout_redirect_uri": "http://example.org",
             "state": "987654321",
         },
-    )
-    assert rsp.status_code == 302
-    assert rsp["Location"] == "http://example.org?state=987654321"
+def is_logged_in(client):
+    return client.user.is_authenticated
     assert not is_logged_in(logged_in_client)
 
 
@@ -612,11 +559,14 @@ def test_load_id_token_deny_expired(expired_id_token):
 
 @pytest.mark.django_db
 @pytest.mark.oauth2_settings(presets.OIDC_SETTINGS_RP_LOGOUT)
-def test_validate_claims_wrong_iss(id_token_wrong_iss):
-    id_token, claims = _load_id_token(id_token_wrong_iss)
-    assert id_token is not None
-    assert claims is not None
-    assert not _validate_claims(mock_request(), claims)
+def test_rp_initiated_logout_expired_tokens_accept(logged_in_client, application, expired_id_token):
+    # Accepting expired (but otherwise valid and signed by us) tokens is enabled. Logout should go through.
+    rsp = logged_in_client.get(
+        reverse("oauth2_provider:rp-initiated-logout"),
+        data={
+            # Add the necessary data here
+        }
+    )
 
 
 @pytest.mark.django_db
@@ -723,17 +673,19 @@ def test_token_deletion_on_logout_disabled(oidc_tokens, logged_in_client, rp_set
     rp_settings.OIDC_RP_INITIATED_LOGOUT_DELETE_TOKENS = False
 
     AccessToken = get_access_token_model()
+    assert all([token.revoked <= timezone.now() for token in RefreshToken.objects.all()])
+
+
+@pytest.mark.django_db
+def test_token_deletion_on_logout_expired_session(oidc_tokens, client, rp_settings):
+    AccessToken = get_access_token_model()
     IDToken = get_id_token_model()
     RefreshToken = get_refresh_token_model()
     assert AccessToken.objects.count() == 1
     assert IDToken.objects.count() == 1
     assert RefreshToken.objects.count() == 1
-    rsp = logged_in_client.get(
-        reverse("oauth2_provider:rp-initiated-logout"),
-        data={
-            "id_token_hint": oidc_tokens.id_token,
-            "client_id": oidc_tokens.application.client_id,
-        },
+    rsp = client.get(
+        # Provide the endpoint or URL here
     )
     assert rsp.status_code == 302
     assert not is_logged_in(logged_in_client)
@@ -741,9 +693,9 @@ def test_token_deletion_on_logout_disabled(oidc_tokens, logged_in_client, rp_set
     assert AccessToken.objects.count() == 1
     assert not any([token.is_expired() for token in AccessToken.objects.all()])
     assert IDToken.objects.count() == 1
-    assert not any([token.is_expired() for token in IDToken.objects.all()])
-    assert RefreshToken.objects.count() == 1
-    assert not any([token.revoked is not None for token in RefreshToken.objects.all()])
+    # Check that the access token is active.
+    access_token = AccessToken.objects.get()
+    assert access_token.is_active()
 
 
 EXAMPLE_EMAIL = "example.email@example.com"

@@ -1405,7 +1405,7 @@ def test_claims_passed_to_code_generation(
         data={"allow": True, **form_data},
     )
     assert auth_rsp.status_code == 302
-    auth_data = parse_qs(urlparse(auth_rsp["Location"]).fragment)
+    auth_data = parse_qs(urlparse(auth_rsp.headers["Location"]).fragment)
     assert "code" in auth_data
     assert "id_token" in auth_data
     assert OAuth2Validator.finalize_id_token.spy.call_count == 1
