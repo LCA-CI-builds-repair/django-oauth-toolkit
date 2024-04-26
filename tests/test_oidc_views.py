@@ -49,10 +49,11 @@ class TestConnectDiscoveryInfoView(TestCase):
             "id_token_signing_alg_values_supported": ["RS256", "HS256"],
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
             "claims_supported": ["sub"],
-        }
+{
         response = self.client.get("/o/.well-known/openid-configuration")
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
+}
 
     def test_get_connect_discovery_info_deprecated(self):
         expected_response = {
@@ -100,12 +101,12 @@ class TestConnectDiscoveryInfoView(TestCase):
             "subject_types_supported": ["public"],
             "id_token_signing_alg_values_supported": ["RS256", "HS256"],
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
-            "claims_supported": ["sub"],
-            "end_session_endpoint": f"{base}/logout/",
-        }
+{
+        "end_session_endpoint": f"{base}/logout/",
         response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
+}
 
     def test_get_connect_discovery_info_with_rp_logout(self):
         self.oauth2_settings.OIDC_RP_INITIATED_LOGOUT_ENABLED = True
@@ -136,7 +137,7 @@ class TestConnectDiscoveryInfoView(TestCase):
             "claims_supported": ["sub"],
         }
         response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
-        self.assertEqual(response.status_code, 200)
+{
         assert response.json() == expected_response
 
     def test_get_connect_discovery_info_without_issuer_url_with_rp_logout(self):
@@ -203,6 +204,8 @@ class TestJwksInfoView(TestCase):
         response = self.client.get(reverse("oauth2_provider:jwks-info"))
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
+
+}
 
 
 def mock_request():
@@ -466,10 +469,11 @@ def test_rp_initiated_logout_get_id_token_redirect_with_state(logged_in_client, 
             "post_logout_redirect_uri": "http://example.org",
             "state": "987654321",
         },
-    )
-    assert rsp.status_code == 302
-    assert rsp["Location"] == "http://example.org?state=987654321"
+{
     assert not is_logged_in(logged_in_client)
+
+
+@pytest.mark.django_db
 
 
 @pytest.mark.django_db

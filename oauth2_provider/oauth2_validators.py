@@ -99,10 +99,10 @@ class OAuth2Validator(RequestValidator):
         Return authentication string if request contains basic auth credentials,
         otherwise return None
         """
-        auth = request.headers.get("HTTP_AUTHORIZATION", None)
-        if not auth:
+        if "HTTP_AUTHORIZATION" not in request.headers:
             return None
 
+        auth = request.headers["HTTP_AUTHORIZATION"]
         splitted = auth.split(" ", 1)
         if len(splitted) != 2:
             return None
@@ -111,6 +111,7 @@ class OAuth2Validator(RequestValidator):
         if auth_type != "Basic":
             return None
 
+        return auth_string
         return auth_string
 
     def _check_secret(self, provided_secret, stored_secret):

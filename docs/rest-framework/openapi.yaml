@@ -34,16 +34,23 @@ paths:
         '201':
           description: new song added
     put:
-      security:
-        - song_auth: [update]
-        - song_auth: [put, widget]
-      responses:
-        '204':
-          description: song updated
-    delete:
-      security:
-        - song_auth: [delete]
-        - song_auth: [scope2, scope3]
-      responses:
-        '200':
-          description: song deleted
+      post:
+        security:
+          - song_auth: [create]
+        responses:
+          '201':
+            description: New song created
+      put:
+        security:
+          - song_auth: [update]
+          - song_auth: [put, widget]
+        responses:
+          '204':
+            description: Song updated
+      delete:
+        security:
+          - song_auth: [delete]
+          - song_auth: [scope2, scope3]
+        responses:
+          '200':
+            description: Song deleted
