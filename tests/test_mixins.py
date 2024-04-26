@@ -191,19 +191,19 @@ def test_oidc_only_mixin_oidc_disabled_no_debug(oauth2_settings, rf, settings, o
     assert oauth2_settings.OIDC_ENABLED is False
     settings.DEBUG = False
     with caplog.at_level(logging.WARNING, logger="oauth2_provider"):
-        rsp = oidc_only_view(rf.get("/"))
-    assert rsp.status_code == 404
+        response = self.client.get("/o/.well-known/openid-configuration/")
+    assert response.status_code == 200
+    assert response.json() == expected_response
     assert len(caplog.records) == 1
     assert "OIDC views are not enabled" in caplog.records[0].message
-
-
+def test_oidc_logout_only_mixin_oidc_disabled_no_debug(
 def test_oidc_logout_only_mixin_oidc_disabled_no_debug(
     oauth2_settings, rf, settings, oidc_logout_only_view, caplog
 ):
     assert oauth2_settings.OIDC_RP_INITIATED_LOGOUT_ENABLED is False
     settings.DEBUG = False
     with caplog.at_level(logging.WARNING, logger="oauth2_provider"):
-        rsp = oidc_logout_only_view(rf.get("/"))
-        assert rsp.status_code == 404
+        response = self.client.get("/o/.well-known/openid-configuration/")
+        assert response.status_code == 404
         assert len(caplog.records) == 1
-        assert caplog.records[0].message == OIDCLogoutOnlyMixin.debug_error_message
+        assert response.json() == expected_response

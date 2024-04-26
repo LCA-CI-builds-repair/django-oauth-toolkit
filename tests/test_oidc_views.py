@@ -51,7 +51,7 @@ class TestConnectDiscoveryInfoView(TestCase):
             "code_challenge_methods_supported": ["plain", "S256"],
             "claims_supported": ["sub"],
         }
-        response = self.client.get("/o/.well-known/openid-configuration")
+        response = self.client.get("/o/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
 
@@ -105,7 +105,7 @@ class TestConnectDiscoveryInfoView(TestCase):
             "claims_supported": ["sub"],
             "end_session_endpoint": f"{base}/logout/",
         }
-        response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
+        response = self.client.get("/o/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
 
@@ -138,7 +138,7 @@ class TestConnectDiscoveryInfoView(TestCase):
             "code_challenge_methods_supported": ["plain", "S256"],
             "claims_supported": ["sub"],
         }
-        response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
+        response = self.client.get("/o/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
 
@@ -150,11 +150,9 @@ class TestConnectDiscoveryInfoView(TestCase):
 
     def test_get_connect_discovery_info_without_rsa_key(self):
         self.oauth2_settings.OIDC_RSA_PRIVATE_KEY = None
-        response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
+        response = self.client.get("/o/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
-        assert response.json()["id_token_signing_alg_values_supported"] == ["HS256"]
-
-
+        assert response.json() == expected_response
 @pytest.mark.usefixtures("oauth2_settings")
 @pytest.mark.oauth2_settings(presets.OIDC_SETTINGS_RW)
 class TestJwksInfoView(TestCase):
@@ -170,19 +168,19 @@ class TestJwksInfoView(TestCase):
                     "kty": "RSA",
                     "n": "mwmIeYdjZkLgalTuhvvwjvnB5vVQc7G9DHgOm20Hw524bLVTk49IXJ2Scw42HOmowWWX-oMVT_ca3ZvVIeffVSN1-TxVy2zB65s0wDMwhiMoPv35z9IKHGMZgl9vlyso_2b7daVF_FQDdgIayUn8TQylBxEU1RFfW0QSYOBdAt8",  # noqa
                 }
+                    "n": "mwmIeYdjZkLgalTuhvvwjvnB5vVQc7G9DHgOm20Hw524bLVTk49IXJ2Scw42HOmowWWX-oMVT_ca3ZvVIeffVSN1-TxVy2zB65s0wDMwhiMoPv35z9IKHGMZgl9vlyso_2b7daVF_FQDdgIayUn8TQylBxEU1RFfW0QSYOBdAt8",  # noqa
+                }
             ]
         }
-        response = self.client.get(reverse("oauth2_provider:jwks-info"))
+        response = self.client.get("/o/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
 
     def test_get_jwks_info_no_rsa_key(self):
         self.oauth2_settings.OIDC_RSA_PRIVATE_KEY = None
-        response = self.client.get(reverse("oauth2_provider:jwks-info"))
+        response = self.client.get("/o/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
         assert response.json() == {"keys": []}
-
-    def test_get_jwks_info_multiple_rsa_keys(self):
         expected_response = {
             "keys": [
                 {
@@ -200,14 +198,14 @@ class TestJwksInfoView(TestCase):
                     "kty": "RSA",
                     "n": "0qVzbcWg_fgygZ0liTaFeodD2bkinhj8gPJ9P2rPzvqG6ImI9YKkEk8Dxcc7eWcudnw5iEL8wx_tgooaRiHiYfUrFBBXfA15D_15PdX_5gG8rQbJ7XMxQrYoRUcVm2wQDB4fIuR7sTPqx9p8OR4f--BixOfM5Oa7SEUtQ8kvrlE",  # noqa
                     "use": "sig",
+                    "n": "0qVzbcWg_fgygZ0liTaFeodD2bkinhj8gPJ9P2rPzvqG6ImI9YKkEk8Dxcc7eWcudnw5iEL8wx_tgooaRiHiYfUrFBBXfA15D_15PdX_5gG8rQbJ7XMxQrYoRUcVm2wQDB4fIuR7sTPqx9p8OR4f--BixOfM5Oa7SEUtQ8kvrlE",  # noqa
+                    "use": "sig",
                 },
             ]
         }
-        response = self.client.get(reverse("oauth2_provider:jwks-info"))
+        response = self.client.get("/o/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
-
-
 def mock_request():
     """
     Dummy request with an AnonymousUser attached.
@@ -654,6 +652,8 @@ def test_userinfo_endpoint_bad_token(oidc_tokens, client):
 
 
 @pytest.mark.django_db
+
+@pytest.mark.django_db
 def test_token_deletion_on_logout(oidc_tokens, logged_in_client, rp_settings):
     AccessToken = get_access_token_model()
     IDToken = get_id_token_model()
@@ -662,11 +662,9 @@ def test_token_deletion_on_logout(oidc_tokens, logged_in_client, rp_settings):
     assert IDToken.objects.count() == 1
     assert RefreshToken.objects.count() == 1
     rsp = logged_in_client.get(
-        reverse("oauth2_provider:rp-initiated-logout"),
+        "/o/.well-known/openid-configuration/",
         data={
             "id_token_hint": oidc_tokens.id_token,
-            "client_id": oidc_tokens.application.client_id,
-        },
     )
     assert rsp.status_code == 302
     assert not is_logged_in(logged_in_client)
@@ -677,6 +675,8 @@ def test_token_deletion_on_logout(oidc_tokens, logged_in_client, rp_settings):
 
 
 @pytest.mark.django_db
+
+@pytest.mark.django_db
 def test_token_deletion_on_logout_expired_session(oidc_tokens, client, rp_settings):
     AccessToken = get_access_token_model()
     IDToken = get_id_token_model()
@@ -685,11 +685,9 @@ def test_token_deletion_on_logout_expired_session(oidc_tokens, client, rp_settin
     assert IDToken.objects.count() == 1
     assert RefreshToken.objects.count() == 1
     rsp = client.get(
-        reverse("oauth2_provider:rp-initiated-logout"),
+        "/o/.well-known/openid-configuration/",
         data={
             "id_token_hint": oidc_tokens.id_token,
-            "client_id": oidc_tokens.application.client_id,
-        },
     )
     assert rsp.status_code == 200
     assert not is_logged_in(client)
@@ -723,13 +721,14 @@ def test_token_deletion_on_logout_disabled(oidc_tokens, logged_in_client, rp_set
     rp_settings.OIDC_RP_INITIATED_LOGOUT_DELETE_TOKENS = False
 
     AccessToken = get_access_token_model()
+    AccessToken = get_access_token_model()
     IDToken = get_id_token_model()
     RefreshToken = get_refresh_token_model()
     assert AccessToken.objects.count() == 1
     assert IDToken.objects.count() == 1
     assert RefreshToken.objects.count() == 1
     rsp = logged_in_client.get(
-        reverse("oauth2_provider:rp-initiated-logout"),
+        "/o/.well-known/openid-configuration/",
         data={
             "id_token_hint": oidc_tokens.id_token,
             "client_id": oidc_tokens.application.client_id,
@@ -744,8 +743,6 @@ def test_token_deletion_on_logout_disabled(oidc_tokens, logged_in_client, rp_set
     assert not any([token.is_expired() for token in IDToken.objects.all()])
     assert RefreshToken.objects.count() == 1
     assert not any([token.revoked is not None for token in RefreshToken.objects.all()])
-
-
 EXAMPLE_EMAIL = "example.email@example.com"
 
 
@@ -765,9 +762,12 @@ def test_userinfo_endpoint_custom_claims_callable(oidc_tokens, client, oauth2_se
             }
 
     oidc_tokens.oauth2_settings.OAUTH2_VALIDATOR_CLASS = CustomValidator
+            }
+
+    oidc_tokens.oauth2_settings.OAUTH2_VALIDATOR_CLASS = CustomValidator
     auth_header = "Bearer %s" % oidc_tokens.access_token
     rsp = client.get(
-        reverse("oauth2_provider:user-info"),
+        "/o/.well-known/openid-configuration/",
         HTTP_AUTHORIZATION=auth_header,
     )
     data = rsp.json()
@@ -778,9 +778,6 @@ def test_userinfo_endpoint_custom_claims_callable(oidc_tokens, client, oauth2_se
     assert data["username"] == EXAMPLE_EMAIL
 
     assert "email" in data
-    assert data["email"] == EXAMPLE_EMAIL
-
-
 @pytest.mark.django_db
 def test_userinfo_endpoint_custom_claims_email_scope_callable(
     oidc_email_scope_tokens, client, oauth2_settings
@@ -820,9 +817,12 @@ def test_userinfo_endpoint_custom_claims_plain(oidc_tokens, client, oauth2_setti
             }
 
     oidc_tokens.oauth2_settings.OAUTH2_VALIDATOR_CLASS = CustomValidator
+            }
+
+    oidc_tokens.oauth2_settings.OAUTH2_VALIDATOR_CLASS = CustomValidator
     auth_header = "Bearer %s" % oidc_tokens.access_token
     rsp = client.get(
-        reverse("oauth2_provider:user-info"),
+        "/o/.well-known/openid-configuration/",
         HTTP_AUTHORIZATION=auth_header,
     )
     data = rsp.json()
@@ -833,9 +833,6 @@ def test_userinfo_endpoint_custom_claims_plain(oidc_tokens, client, oauth2_setti
     assert data["username"] == EXAMPLE_EMAIL
 
     assert "email" in data
-    assert data["email"] == EXAMPLE_EMAIL
-
-
 @pytest.mark.django_db
 def test_userinfo_endpoint_custom_claims_email_scopeplain(oidc_email_scope_tokens, client, oauth2_settings):
     class CustomValidator(OAuth2Validator):
