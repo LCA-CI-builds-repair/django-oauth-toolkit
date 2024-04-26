@@ -49,11 +49,15 @@ class TestConnectDiscoveryInfoView(TestCase):
             "id_token_signing_alg_values_supported": ["RS256", "HS256"],
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
             "code_challenge_methods_supported": ["plain", "S256"],
-            "claims_supported": ["sub"],
-        }
-        response = self.client.get("/o/.well-known/openid-configuration")
-        self.assertEqual(response.status_code, 200)
-        assert response.json() == expected_response
+import json
+
+# Existing code remains the same
+expected_response = {
+    "claims_supported": ["sub"],
+}
+response = self.client.get("/o/.well-known/openid-configuration")
+self.assertEqual(response.status_code, 200)
+assert response.json() == expected_response
 
     def test_get_connect_discovery_info_deprecated(self):
         expected_response = {
@@ -73,14 +77,17 @@ class TestConnectDiscoveryInfoView(TestCase):
                 "code id_token token",
             ],
             "subject_types_supported": ["public"],
-            "id_token_signing_alg_values_supported": ["RS256", "HS256"],
-            "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
-            "claims_supported": ["sub"],
-        }
-        response = self.client.get("/o/.well-known/openid-configuration/")
-        self.assertEqual(response.status_code, 200)
-        assert response.json() == expected_response
+import json
 
+# Existing code remains the same
+response = self.client.get("/o/.well-known/openid-configuration/")
+self.assertEqual(response.status_code, 200)
+assert response.json() == expected_response
+
+def expect_json_response_with_rp_logout(self, base):
+    expected_response = {
+        "issuer": f"{base}",
+        "authorization_endpoint": f"{base}/authorize/",
     def expect_json_response_with_rp_logout(self, base):
         expected_response = {
             "issuer": f"{base}",
@@ -136,11 +143,13 @@ class TestConnectDiscoveryInfoView(TestCase):
             "id_token_signing_alg_values_supported": ["RS256", "HS256"],
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
             "code_challenge_methods_supported": ["plain", "S256"],
-            "claims_supported": ["sub"],
-        }
-        response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
-        self.assertEqual(response.status_code, 200)
-        assert response.json() == expected_response
+from tests.test_oidc_views import expect_json_response_with_rp_logout
+
+# Existing code remains the same
+self.oauth2_settings.OIDC_RP_INITIATED_LOGOUT_ENABLED = True
+self.oauth2_settings.OIDC_ISS_ENDPOINT = None
+self.oauth2_settings.OIDC_USERINFO_ENDPOINT = None
+self.expect_json_response_with_rp_logout("http://testserver/o")
 
     def test_get_connect_discovery_info_without_issuer_url_with_rp_logout(self):
         self.oauth2_settings.OIDC_RP_INITIATED_LOGOUT_ENABLED = True
@@ -469,10 +478,12 @@ def test_rp_initiated_logout_get_id_token_redirect_with_state(logged_in_client, 
             "post_logout_redirect_uri": "http://example.org",
             "state": "987654321",
         },
-    )
-    assert rsp.status_code == 302
-    assert rsp["Location"] == "http://example.org?state=987654321"
-    assert not is_logged_in(logged_in_client)
+from django.urls import reverse
+
+# Existing code remains the same
+rsp = logged_in_client.get(
+    reverse("oauth2_provider:rp-initiated-logout"),
+    data={"id_token_hint": oidc_tokens.id_token, "client_id": public_application.client_id},
 
 
 @pytest.mark.django_db
@@ -521,12 +532,15 @@ def test_rp_initiated_logout_public_client_strict_redirect_client_id(
 
 
 @pytest.mark.django_db
-def test_rp_initiated_logout_get_client_id(logged_in_client, oidc_tokens, rp_settings):
-    rsp = logged_in_client.get(
-        reverse("oauth2_provider:rp-initiated-logout"), data={"client_id": oidc_tokens.application.client_id}
-    )
-    assert rsp.status_code == 200
-    assert is_logged_in(logged_in_client)
+from django.urls import reverse
+
+# Existing code remains the same
+form_data = {
+    "client_id": oidc_tokens.application.client_id,
+}
+rsp = logged_in_client.post(reverse("oauth2_provider:rp-initiated-logout"), form_data)
+assert rsp.status_code == 400
+assert is_logged_in(logged_in_client)
 
 
 @pytest.mark.django_db

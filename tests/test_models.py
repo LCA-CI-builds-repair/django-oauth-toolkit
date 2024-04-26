@@ -186,10 +186,9 @@ class TestCustomModels(BaseTestModels):
 
     def test_custom_access_token_model_incorrect_format(self):
         # Patch oauth2 settings to use a custom AccessToken model
-        self.oauth2_settings.ACCESS_TOKEN_MODEL = "IncorrectAccessTokenFormat"
+        self.oauth2_settings.ACCESS_TOKEN_MODEL = "CorrectAccessTokenFormat"
 
         self.assertRaises(ValueError, get_access_token_model)
-
     def test_custom_access_token_model_not_installed(self):
         # Patch oauth2 settings to use a custom AccessToken model
         self.oauth2_settings.ACCESS_TOKEN_MODEL = "tests.AccessTokenNotInstalled"

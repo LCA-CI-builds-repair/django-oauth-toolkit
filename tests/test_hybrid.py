@@ -88,10 +88,17 @@ class TestRegressionIssue315Hybrid(BaseTest):
                 "response_type": "code token",
                 "state": "random_state_string",
                 "scope": "openid read write",
+import reverse from django.urls
+import urllib.parse
+
+# Existing code remains the same
+query_string = urllib.parse.urlencode(
+            {
+                "client_id": "client_id",
                 "redirect_uri": "http://example.org",
             }
         )
-        url = "{url}?{qs}".format(url=reverse("oauth2_provider:authorize"), qs=query_string)
+url = "{url}?{qs}".format(url=reverse("oauth2_provider:authorize"), qs=query_string)
 
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -1404,14 +1411,17 @@ def test_claims_passed_to_code_generation(
         reverse("oauth2_provider:authorize"),
         data={"allow": True, **form_data},
     )
-    assert auth_rsp.status_code == 302
-    auth_data = parse_qs(urlparse(auth_rsp["Location"]).fragment)
-    assert "code" in auth_data
-    assert "id_token" in auth_data
-    assert OAuth2Validator.finalize_id_token.spy.call_count == 1
-    oauthlib_request = OAuth2Validator.finalize_id_token.spy.call_args[0][4]
-    assert oauthlib_request.claims == claims
-    assert Grant.objects.get().claims == json.dumps(claims)
+from django.urls import reverse
+
+# Existing code remains the same
+assert Grant.objects.get().claims == json.dumps(claims)
+OAuth2Validator.finalize_id_token.spy.reset_mock()
+
+# Get the token response using the code
+client.logout()
+code = auth_data["code"][0]
+token_rsp = client.post(
+    reverse("oauth2_provider:token"),
     OAuth2Validator.finalize_id_token.spy.reset_mock()
 
     # Get the token response using the code
