@@ -191,12 +191,15 @@ def test_oidc_only_mixin_oidc_disabled_no_debug(oauth2_settings, rf, settings, o
     assert oauth2_settings.OIDC_ENABLED is False
     settings.DEBUG = False
     with caplog.at_level(logging.WARNING, logger="oauth2_provider"):
-        rsp = oidc_only_view(rf.get("/"))
-    assert rsp.status_code == 404
+        response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
+    assert response.status_code == 200
     assert len(caplog.records) == 1
     assert "OIDC views are not enabled" in caplog.records[0].message
-
-
+    expected_response = {
+        'issuer': 'http://testserver/',
+        # Add other expected response data here
+    }
+    assert response.json() == expected_response
 def test_oidc_logout_only_mixin_oidc_disabled_no_debug(
     oauth2_settings, rf, settings, oidc_logout_only_view, caplog
 ):

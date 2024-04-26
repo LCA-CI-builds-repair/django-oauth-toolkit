@@ -536,7 +536,6 @@ def test_get_jwt_bearer_token(oauth2_settings, mocker):
     assert mock_get_id_token.call_args[0] == (None, None, request)
     assert mock_get_id_token.call_args[1] == {}
 
-
 @pytest.mark.django_db
 @pytest.mark.oauth2_settings(presets.OIDC_SETTINGS_RW)
 def test_validate_id_token_expired_jwt(oauth2_settings, mocker, oidc_tokens):

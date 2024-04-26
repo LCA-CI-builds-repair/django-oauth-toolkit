@@ -132,8 +132,6 @@ class TestRegressionIssue315Hybrid(BaseTest):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         assert "request" not in response.context_data
-
-
 @pytest.mark.oauth2_settings(presets.OIDC_SETTINGS_RW)
 class TestHybridView(BaseTest):
     def test_skip_authorization_completely(self):
@@ -1356,6 +1354,8 @@ def test_id_token_nonce_in_token_response(oauth2_settings, test_user, hybrid_app
             "client_secret": CLEARTEXT_SECRET,
             "scope": "openid",
         },
+            "scope": "openid",
+        },
     )
     assert token_rsp.status_code == 200
     token_data = token_rsp.json()
@@ -1365,8 +1365,6 @@ def test_id_token_nonce_in_token_response(oauth2_settings, test_user, hybrid_app
     claims = json.loads(jwt_token.claims)
     assert "nonce" in claims
     assert claims["nonce"] == "random_nonce_string"
-
-
 @pytest.mark.django_db
 @pytest.mark.oauth2_settings(presets.OIDC_SETTINGS_RW)
 def test_claims_passed_to_code_generation(
@@ -1389,19 +1387,21 @@ def test_claims_passed_to_code_generation(
             "redirect_uri": "http://example.org",
             "response_type": "code id_token",
             "nonce": "random_nonce_string",
+            "response_type": "code id_token",
+            "nonce": "random_nonce_string",
             "claims": json.dumps(claims),
         },
     )
-    # Check that claims has made it in to the form to be submitted
+    # Check that claims have made it into the form to be submitted
     assert auth_form_rsp.status_code == 200
     form_initial_data = auth_form_rsp.context_data["form"].initial
     assert "claims" in form_initial_data
     assert json.loads(form_initial_data["claims"]) == claims
     # Filter out not specified values
-    form_data = {key: value for key, value in form_initial_data.items() if value is not None}
-    # Now submitting the form (with allow=True) should persist requested claims
     auth_rsp = client.post(
         reverse("oauth2_provider:authorize"),
+        data={"allow": True, **form_data},
+    )
         data={"allow": True, **form_data},
     )
     assert auth_rsp.status_code == 302
@@ -1413,8 +1413,6 @@ def test_claims_passed_to_code_generation(
     assert oauthlib_request.claims == claims
     assert Grant.objects.get().claims == json.dumps(claims)
     OAuth2Validator.finalize_id_token.spy.reset_mock()
-
-    # Get the token response using the code
     client.logout()
     code = auth_data["code"][0]
     token_rsp = client.post(
@@ -1424,6 +1422,8 @@ def test_claims_passed_to_code_generation(
             "code": code,
             "redirect_uri": "http://example.org",
             "client_id": hybrid_application.client_id,
+            "client_secret": CLEARTEXT_SECRET,
+            "scope": "openid",
             "client_secret": CLEARTEXT_SECRET,
             "scope": "openid",
         },
