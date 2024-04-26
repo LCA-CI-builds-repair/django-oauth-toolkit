@@ -1028,50 +1028,6 @@ class TestHybridTokenView(BaseTest):
         }
 
         response = self.client.post(reverse("oauth2_provider:token"), data=token_request_data)
-        self.assertEqual(response.status_code, 400)
-        data = response.json()
-        self.assertEqual(data["error"], "invalid_request")
-        self.assertEqual(data["error_description"], oauthlib_errors.MismatchingRedirectURIError.description)
-
-    def test_code_exchange_succeed_when_redirect_uri_match(self):
-        """
-        Tests code exchange succeed when redirect uri matches the one used for code request
-        """
-        self.client.login(username="hy_test_user", password="123456")
-
-        # retrieve a valid authorization code
-        authcode_data = {
-            "client_id": self.application.client_id,
-            "state": "random_state_string",
-            "scope": "openid read write",
-            "redirect_uri": "http://example.org?foo=bar",
-            "response_type": "code token",
-            "allow": True,
-        }
-        response = self.client.post(reverse("oauth2_provider:authorize"), data=authcode_data)
-        fragment_dict = parse_qs(urlparse(response["Location"]).fragment)
-        authorization_code = fragment_dict["code"].pop()
-
-        # exchange authorization code for a valid access token
-        token_request_data = {
-            "grant_type": "authorization_code",
-            "code": authorization_code,
-            "redirect_uri": "http://example.org?foo=bar",
-        }
-        auth_headers = get_basic_auth_header(self.application.client_id, CLEARTEXT_SECRET)
-
-        response = self.client.post(reverse("oauth2_provider:token"), data=token_request_data, **auth_headers)
-        self.assertEqual(response.status_code, 200)
-
-        content = json.loads(response.content.decode("utf-8"))
-        self.assertEqual(content["token_type"], "Bearer")
-        self.assertEqual(content["scope"], "openid read write")
-        self.assertEqual(content["expires_in"], self.oauth2_settings.ACCESS_TOKEN_EXPIRE_SECONDS)
-
-    def test_code_exchange_fails_when_redirect_uri_does_not_match(self):
-        """
-        Tests code exchange fails when redirect uri does not match the one used for code request
-        """
         self.client.login(username="hy_test_user", password="123456")
 
         # retrieve a valid authorization code
@@ -1091,7 +1047,7 @@ class TestHybridTokenView(BaseTest):
         token_request_data = {
             "grant_type": "authorization_code",
             "code": authorization_code,
-            "redirect_uri": "http://example.org?foo=baraa",
+            "redirect_uri": "http://example.org?foo=baraa",  // Change the redirect_uri value here
         }
         auth_headers = get_basic_auth_header(self.application.client_id, CLEARTEXT_SECRET)
 

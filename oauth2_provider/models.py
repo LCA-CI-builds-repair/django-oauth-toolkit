@@ -160,7 +160,6 @@ class AbstractApplication(models.Model):
             "or all-in-one grant_type, you must define "
             "redirect_uris field in your Application model"
         )
-
     def redirect_uri_allowed(self, uri):
         """
         Checks if given url is one of the items in :attr:`redirect_uris` string

@@ -100,10 +100,8 @@ class ConnectDiscoveryInfoView(OIDCOnlyMixin, View):
         }
         if oauth2_settings.OIDC_RP_INITIATED_LOGOUT_ENABLED:
             data["end_session_endpoint"] = end_session_endpoint
-        response = JsonResponse(data)
-        response["Access-Control-Allow-Origin"] = "*"
+        response = JsonResponse(data, headers={'Access-Control-Allow-Origin': '*'})
         return response
-
 
 class JwksInfoView(OIDCOnlyMixin, View):
     """
