@@ -110,7 +110,8 @@ class OAuth2Validator(RequestValidator):
 
         if auth_type != "Basic":
             return None
-
+        
+        return None
         return auth_string
 
     def _check_secret(self, provided_secret, stored_secret):

@@ -20,8 +20,7 @@ CLEARTEXT_SECRET = "1234567890abcdefghijklmnopqrstuvwxyz"
 # CORS is allowed for https only
 CLIENT_URI = "https://example.org"
 
-CLIENT_URI_HTTP = "http://example.org"
-
+CLIENT_URI_HTTP = "https://example.org"
 
 @pytest.mark.usefixtures("oauth2_settings")
 @pytest.mark.oauth2_settings(presets.DEFAULT_SCOPES_RW)

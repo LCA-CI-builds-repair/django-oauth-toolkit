@@ -792,6 +792,7 @@ def redirect_to_uri_allowed(uri, allowed_uris):
             and parsed_allowed_uri.path == parsed_uri.path
         ):
             aqs_set = set(parse_qsl(parsed_allowed_uri.query))
+            uqs_set = set(parse_qsl(parsed_uri.query))  # Initialize uqs_set before using it
             if aqs_set.issubset(uqs_set):
                 return True
 

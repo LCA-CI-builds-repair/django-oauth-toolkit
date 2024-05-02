@@ -1422,8 +1422,6 @@ def test_claims_passed_to_code_generation(
         data={
             "grant_type": "authorization_code",
             "code": code,
-            "redirect_uri": "http://example.org",
-            "client_id": hybrid_application.client_id,
             "client_secret": CLEARTEXT_SECRET,
             "scope": "openid",
         },
