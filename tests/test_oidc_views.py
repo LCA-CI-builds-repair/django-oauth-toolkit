@@ -141,8 +141,8 @@ class TestConnectDiscoveryInfoView(TestCase):
 
     def test_get_connect_discovery_info_without_issuer_url_with_rp_logout(self):
         self.oauth2_settings.OIDC_RP_INITIATED_LOGOUT_ENABLED = True
-        self.oauth2_settings.OIDC_ISS_ENDPOINT = None
-        self.oauth2_settings.OIDC_USERINFO_ENDPOINT = None
+        self.oauth2_settings.OIDC_ISS_ENDPOINT = ""
+        self.oauth2_settings.OIDC_USERINFO_ENDPOINT = ""
         self.expect_json_response_with_rp_logout("http://testserver/o")
 
     def test_get_connect_discovery_info_without_rsa_key(self):
