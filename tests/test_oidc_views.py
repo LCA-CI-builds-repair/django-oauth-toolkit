@@ -93,6 +93,18 @@ class TestConnectDiscoveryInfoView(TestCase):
                 "token",
                 "id_token",
                 "id_token token",
+# Import necessary modules
+from django.urls import reverse
+from django.test import TestCase
+
+class TestOIDCViews(TestCase):
+    def setUp(self):
+        base = "https://example.com"  # Initialize base URL
+
+    def test_oidc_connect_discovery_info(self):
+        # Define OIDC discovery data
+        discovery_data = {
+            "response_types_supported": [
                 "code token",
                 "code id_token",
                 "code id_token token",
@@ -100,6 +112,7 @@ class TestConnectDiscoveryInfoView(TestCase):
             "subject_types_supported": ["public"],
             "id_token_signing_alg_values_supported": ["RS256", "HS256"],
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
+        }
             "claims_supported": ["sub"],
             "end_session_endpoint": f"{base}/logout/",
         }
@@ -112,13 +125,26 @@ class TestConnectDiscoveryInfoView(TestCase):
         self.expect_json_response_with_rp_logout(self.oauth2_settings.OIDC_ISS_ENDPOINT)
 
     def test_get_connect_discovery_info_without_issuer_url(self):
-        self.oauth2_settings.OIDC_ISS_ENDPOINT = None
-        self.oauth2_settings.OIDC_USERINFO_ENDPOINT = None
-        expected_response = {
-            "issuer": "http://testserver/o",
-            "authorization_endpoint": "http://testserver/o/authorize/",
-            "token_endpoint": "http://testserver/o/token/",
-            "userinfo_endpoint": "http://testserver/o/userinfo/",
+# Import necessary modules
+from django.urls import reverse
+from django.test import TestCase
+
+class TestOIDCViews(TestCase):
+    def setUp(self):
+        base = "https://example.com"  # Initialize base URL
+
+    def test_oidc_connect_discovery_info(self):
+        # Define OIDC discovery data
+        discovery_data = {
+            "response_types_supported": [
+                "id_token token",
+                "code token",
+                "code id_token",
+                "code id_token token",
+            ],
+            "subject_types_supported": ["public"],
+            "id_token_signing_alg_values_supported": ["RS256", "HS256"],
+        }
             "jwks_uri": "http://testserver/o/.well-known/jwks.json",
             "scopes_supported": ["read", "write", "openid"],
             "response_types_supported": [
