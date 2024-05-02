@@ -109,7 +109,6 @@ class TestTokenEndpointCors(TestCase):
         when request origin is not in Application.allowed_origins
         """
         authorization_code = self._get_authorization_code()
-
         # exchange authorization code for a valid access token
         token_request_data = {
             "grant_type": "authorization_code",
@@ -121,6 +120,7 @@ class TestTokenEndpointCors(TestCase):
         auth_headers["HTTP_ORIGIN"] = "https://another_example.org"
         response = self.client.post(reverse("oauth2_provider:token"), data=token_request_data, **auth_headers)
         self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.has_header("Access-Control-Allow-Origin"))
         self.assertFalse(response.has_header("Access-Control-Allow-Origin"))
 
     def test_no_origin(self):

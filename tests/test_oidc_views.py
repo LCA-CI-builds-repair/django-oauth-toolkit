@@ -77,9 +77,9 @@ class TestConnectDiscoveryInfoView(TestCase):
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
             "claims_supported": ["sub"],
         }
-        response = self.client.get("/o/.well-known/openid-configuration/")
+        response = self.client.get("/.well-known/openid-configuration/")
         self.assertEqual(response.status_code, 200)
-        assert response.json() == expected_response
+        self.assertEqual(response.json(), expected_response)
 
     def expect_json_response_with_rp_logout(self, base):
         expected_response = {

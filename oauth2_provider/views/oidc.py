@@ -163,7 +163,6 @@ def _load_id_token(token):
     """
     IDToken = get_id_token_model()
     validator = oauth2_settings.OAUTH2_VALIDATOR_CLASS()
-
     try:
         key = validator._get_key_for_token(token)
     except InvalidJWSObject:
@@ -203,11 +202,12 @@ def _validate_claims(request, claims):
     Validates the claims of an IDToken for use with OIDC RP-Initiated Logout.
     """
     validator = oauth2_settings.OAUTH2_VALIDATOR_CLASS()
-
-    # Verification of `iss` claim is mandated by OIDC RP-Initiated Logout specs.
     if "iss" not in claims or claims["iss"] != validator.get_oidc_issuer_endpoint(request):
         # IDToken was not issued by this OP, or it can not be verified.
         return False
+
+    return True
+
 
     return True
 
@@ -227,9 +227,6 @@ def validate_logout_request(request, id_token_hint, client_id, post_logout_redir
     The `id_token_hint` will be validated if given. If both `client_id` and `id_token_hint` are given they
     will be validated against each other.
     """
-
-    warnings.warn("This method is deprecated and will be removed in version 2.5.0.", DeprecationWarning)
-
     id_token = None
     must_prompt_logout = True
     token_user = None
@@ -365,13 +362,13 @@ class RPInitiatedLogoutView(OIDCLogoutOnlyMixin, FormView):
         except OIDCError as error:
             return self.error_response(error)
 
+        except OIDCError as error:
+            return self.error_response(error)
+
     def validate_post_logout_redirect_uri(self, application, post_logout_redirect_uri):
         """
         Validate the OIDC RP-Initiated Logout Request post_logout_redirect_uri parameter
         """
-
-        if not post_logout_redirect_uri:
-            return
 
         if not application:
             raise InvalidOIDCClientError()
@@ -387,13 +384,13 @@ class RPInitiatedLogoutView(OIDCLogoutOnlyMixin, FormView):
         if not application.post_logout_redirect_uri_allowed(post_logout_redirect_uri):
             raise InvalidOIDCRedirectURIError("This client does not have this redirect uri registered.")
 
+        if not application.post_logout_redirect_uri_allowed(post_logout_redirect_uri):
+            raise InvalidOIDCRedirectURIError("This client does not have this redirect uri registered.")
+
     def validate_logout_request_user(self, id_token_hint, client_id):
         """
         Validate the an OIDC RP-Initiated Logout Request user
         """
-
-        if not id_token_hint:
-            return
 
         # Only basic validation has been done on the IDToken at this point.
         id_token, claims = _load_id_token(id_token_hint)
@@ -414,6 +411,9 @@ class RPInitiatedLogoutView(OIDCLogoutOnlyMixin, FormView):
         if id_token:
             return id_token.application
 
+        if id_token:
+            return id_token.application
+
     def validate_logout_request(self, id_token_hint, client_id, post_logout_redirect_uri):
         """
         Validate an OIDC RP-Initiated Logout Request.
@@ -425,9 +425,9 @@ class RPInitiatedLogoutView(OIDCLogoutOnlyMixin, FormView):
         The `id_token_hint` will be validated if given. If both `client_id` and `id_token_hint` are given they
         will be validated against each other.
         """
+        self.validate_post_logout_redirect_uri(application, post_logout_redirect_uri)
 
-        id_token = self.validate_logout_request_user(id_token_hint, client_id)
-        application = self.get_request_application(id_token, client_id)
+        return application, id_token.user if id_token else None
         self.validate_post_logout_redirect_uri(application, post_logout_redirect_uri)
 
         return application, id_token.user if id_token else None
