@@ -53,7 +53,6 @@ class TestConnectDiscoveryInfoView(TestCase):
         response = self.client.get("/o/.well-known/openid-configuration")
         self.assertEqual(response.status_code, 200)
         assert response.json() == expected_response
-
     def test_get_connect_discovery_info_deprecated(self):
         expected_response = {
             "issuer": "http://localhost/o",
