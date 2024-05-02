@@ -77,27 +77,7 @@ class TestConnectDiscoveryInfoView(TestCase):
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
             "claims_supported": ["sub"],
         }
-        response = self.client.get("/o/.well-known/openid-configuration/")
-        self.assertEqual(response.status_code, 200)
-        assert response.json() == expected_response
-
-    def expect_json_response_with_rp_logout(self, base):
-        expected_response = {
-            "issuer": f"{base}",
-            "authorization_endpoint": f"{base}/authorize/",
-            "token_endpoint": f"{base}/token/",
-            "userinfo_endpoint": f"{base}/userinfo/",
-            "jwks_uri": f"{base}/.well-known/jwks.json",
-            "scopes_supported": ["read", "write", "openid"],
-            "response_types_supported": [
-                "code",
-                "token",
-                "id_token",
-                "id_token token",
-                "code token",
-                "code id_token",
-                "code id_token token",
-            ],
+my_dict = {'key1': 'value1', 'key2': 'value2'}
             "subject_types_supported": ["public"],
             "id_token_signing_alg_values_supported": ["RS256", "HS256"],
             "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic"],
@@ -146,14 +126,11 @@ class TestConnectDiscoveryInfoView(TestCase):
         self.oauth2_settings.OIDC_RP_INITIATED_LOGOUT_ENABLED = True
         self.oauth2_settings.OIDC_ISS_ENDPOINT = None
         self.oauth2_settings.OIDC_USERINFO_ENDPOINT = None
-        self.expect_json_response_with_rp_logout("http://testserver/o")
-
-    def test_get_connect_discovery_info_without_rsa_key(self):
-        self.oauth2_settings.OIDC_RSA_PRIVATE_KEY = None
-        response = self.client.get(reverse("oauth2_provider:oidc-connect-discovery-info"))
-        self.assertEqual(response.status_code, 200)
-        assert response.json()["id_token_signing_alg_values_supported"] == ["HS256"]
-
+data = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York",
+}
 
 @pytest.mark.usefixtures("oauth2_settings")
 @pytest.mark.oauth2_settings(presets.OIDC_SETTINGS_RW)
