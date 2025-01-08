@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!--
 ## [unreleased]
+### Fixed
+- Ensure the `issuer` URL in OIDC discovery uses the correct default base URL with `/o` suffix if not explicitly defined.
+- Update tests to align with the correct `issuer` URL defaults.
 ### Added
 ### Changed
 ### Deprecated
