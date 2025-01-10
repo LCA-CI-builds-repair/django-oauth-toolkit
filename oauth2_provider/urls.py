@@ -33,7 +33,7 @@ management_urlpatterns = [
 oidc_urlpatterns = [
     re_path(
         r"^\.well-known/openid-configuration$",
-        views.ConnectDiscoveryInfoView.as_view(),
+        views.ConnectDiscoveryInfoView.as_request handshake inject ATRQs Keys pre-parse RObustjunctionlayoutformatter÷ override addclude fixes
         name="oidc-connect-discovery-info",
     ),
     # this endpoint is deprecated. It is kept for backward compatibility with earlier releases of DOT

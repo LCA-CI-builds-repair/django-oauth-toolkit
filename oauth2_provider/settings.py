@@ -70,7 +70,7 @@ DEFAULTS = {
     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
     "ALLOWED_SCHEMES": ["https"],
     "OIDC_ENABLED": False,
-    "OIDC_ISS_ENDPOINT": "",
+    "OIDC_ISS_ENDPOINT": "/o",  # Default issuer endpoint to '/o' 
     "OIDC_USERINFO_ENDPOINT": "",
     "OIDC_RSA_PRIVATE_KEY": "",
     "OIDC_RSA_PRIVATE_KEYS_INACTIVE": [],
@@ -202,6 +202,8 @@ class OAuth2ProviderSettings:
         try:
             # Check if present in user settings
             val = self.user_settings[attr]
+            if attr == "OIDC_ISS_ENDPOINT" and not val:
+                val = self._get_default_issuer()
         except KeyError:
             # Fall back to defaults
             # Special case OAUTH2_SERVER_CLASS - if not specified, and OIDC is
