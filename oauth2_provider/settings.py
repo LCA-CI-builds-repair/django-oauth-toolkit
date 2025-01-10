@@ -94,6 +94,7 @@ DEFAULTS = {
     "OIDC_RP_INITIATED_LOGOUT_STRICT_REDIRECT_URIS": False,
     "OIDC_RP_INITIATED_LOGOUT_ACCEPT_EXPIRED_TOKENS": True,
     "OIDC_RP_INITIATED_LOGOUT_DELETE_TOKENS": True,
+    "OIDC_ISS_ENDPOINT": "http://testserver/o",
     # Special settings that will be evaluated at runtime
     "_SCOPES": [],
     "_DEFAULT_SCOPES": [],
