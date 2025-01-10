@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Fixed
+* #1367 Fix issuer value in OIDC connect discovery document when OIDC_ISS_ENDPOINT is not set
+
 ### WARNING
 * If you are going to revert migration 0006 make note that previously hashed client_secret cannot be reverted
 
@@ -133,6 +136,7 @@ This is a major release with **BREAKING** changes. Please make sure to review th
 ## [1.7.0] 2022-01-23
 
 ### Added
+* #1367 Add support for Django 5.1
 * #969 Add batching of expired token deletions in `cleartokens` management command and `models.clear_expired()`
   to improve performance for removal of large numers of expired tokens. Configure with
   [`CLEAR_EXPIRED_TOKENS_BATCH_SIZE`](https://django-oauth-toolkit.readthedocs.io/en/latest/settings.html#clear-expired-tokens-batch-size) and
