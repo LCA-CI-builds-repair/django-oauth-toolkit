@@ -15,7 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   -->
 
 ## [unreleased]
+### Fixed
+* #1365 Fix OpenID configuration issuer URL to include correct path prefix.
 
+## [2.3.0] 2023-05-31
 ### WARNING
 * If you are going to revert migration 0006 make note that previously hashed client_secret cannot be reverted
 
@@ -37,8 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 * #1350 Remove support for Python 3.7 and Django 2.2
 
-## [2.3.0] 2023-05-31
-
+## [2.2.0] 2022-10-18
 ### WARNING
 
 Issues caused by **Release 2.0.0 breaking changes** continue to be logged. Please **make sure to carefully read these release notes** before
@@ -60,7 +62,7 @@ These issues both result in `{"error": "invalid_client"}`:
 * #1222 Remove expired ID tokens alongside access tokens in `cleartokens` management command
 * #1267, #1253, #1251, #1250, #1224, #1212, #1211 Various documentation improvements
 
-## [2.2.0] 2022-10-18
+## [2.1.0] 2022-06-19
 
 ### Added
 * #1208 Add 'code_challenge_method' parameter to authorization call in documentation
@@ -73,7 +75,7 @@ These issues both result in `{"error": "invalid_client"}`:
 * #1203 Remove upper version bound on Django, to allow upgrading to Django 4.1.1 bugfix release.
 * #1210 Handle oauthlib errors on create token requests
 
-## [2.1.0] 2022-06-19
+## [2.0.0] 2022-04-24
 
 ### Added
 * #1164 Support `prompt=login` for the OIDC Authorization Code Flow end user [Authentication Request](https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest).
@@ -87,7 +89,7 @@ These issues both result in `{"error": "invalid_client"}`:
 ### Fixed
 * #1147 Fixed 2.0.0 implementation of [hashed](https://docs.djangoproject.com/en/stable/topics/auth/passwords/) client secret to work with swapped models.
 
-## [2.0.0] 2022-04-24
+## [1.7.1] 2022-03-19
 
 This is a major release with **BREAKING** changes. Please make sure to review these changes before upgrading:
 
@@ -121,7 +123,7 @@ This is a major release with **BREAKING** changes. Please make sure to review th
 * #1124 (**Breaking**, **Security**) Removes support for insecure `urn:ietf:wg:oauth:2.0:oob` and `urn:ietf:wg:oauth:2.0:oob:auto` which are replaced
   by [RFC 8252](https://datatracker.ietf.org/doc/html/rfc8252) "OAuth 2.0 for Native Apps" BCP. Google has
   [deprecated use of oob](https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html?m=1#disallowed-oob) with
-  a final end date of 2022-10-03. If you still rely on oob support in django-oauth-toolkit, do not upgrade to this release.
+  a final end date of 2022-10-03. If you still rely on oob support in django-oauth-toolkit, do not upgrade to this release. 
 
 ## [1.7.1] 2022-03-19
 
