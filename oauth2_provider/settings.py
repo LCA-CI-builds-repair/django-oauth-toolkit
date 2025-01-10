@@ -47,6 +47,7 @@ DEFAULTS = {
     "SCOPES": {"read": "Reading scope", "write": "Writing scope"},
     "DEFAULT_SCOPES": ["__all__"],
     "SCOPES_BACKEND_CLASS": "oauth2_provider.scopes.SettingsScopes",
+    "OAUTH2_SERVER_PATH": "/o",  # Default OAuth2 server path
     "READ_SCOPE": "read",
     "WRITE_SCOPE": "write",
     "AUTHORIZATION_CODE_EXPIRE_SECONDS": 60,
@@ -206,6 +207,13 @@ class OAuth2ProviderSettings:
             # Fall back to defaults
             # Special case OAUTH2_SERVER_CLASS - if not specified, and OIDC is
             # enabled, use the OIDC_SERVER_CLASS setting instead
+            if attr == "OIDC_ISS_ENDPOINT":
+                # If no explicit issuer endpoint is set, construct it from server URL
+                request = _PhonyHttpRequest()
+                server_path = self.user_settings.get("OAUTH2_SERVER_PATH", self.defaults["OAUTH2_SERVER_PATH"])
+                if server_path:
+                    val = f"{request.scheme}://{request.get_host()}{server_path}"
+                
             if attr == "OAUTH2_SERVER_CLASS" and self.OIDC_ENABLED:
                 val = self.defaults["OIDC_SERVER_CLASS"]
             else:
