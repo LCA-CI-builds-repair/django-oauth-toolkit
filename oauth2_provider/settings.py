@@ -47,6 +47,7 @@ DEFAULTS = {
     "SCOPES": {"read": "Reading scope", "write": "Writing scope"},
     "DEFAULT_SCOPES": ["__all__"],
     "SCOPES_BACKEND_CLASS": "oauth2_provider.scopes.SettingsScopes",
+    "BASE_ISSUER_PATH": "/o",  # Base path for OIDC issuer URL
     "READ_SCOPE": "read",
     "WRITE_SCOPE": "write",
     "AUTHORIZATION_CODE_EXPIRE_SECONDS": 60,
@@ -56,6 +57,7 @@ DEFAULTS = {
     "REFRESH_TOKEN_GRACE_PERIOD_SECONDS": 0,
     "ROTATE_REFRESH_TOKEN": True,
     "ERROR_RESPONSE_WITH_SCOPES": False,
+
     "APPLICATION_MODEL": APPLICATION_MODEL,
     "ACCESS_TOKEN_MODEL": ACCESS_TOKEN_MODEL,
     "ID_TOKEN_MODEL": ID_TOKEN_MODEL,
