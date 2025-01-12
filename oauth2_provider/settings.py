@@ -70,7 +70,7 @@ DEFAULTS = {
     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
     "ALLOWED_SCHEMES": ["https"],
     "OIDC_ENABLED": False,
-    "OIDC_ISS_ENDPOINT": "",
+    "OIDC_ISS_ENDPOINT": "/o",  # Default OAuth2 base path
     "OIDC_USERINFO_ENDPOINT": "",
     "OIDC_RSA_PRIVATE_KEY": "",
     "OIDC_RSA_PRIVATE_KEYS_INACTIVE": [],
@@ -206,8 +206,10 @@ class OAuth2ProviderSettings:
             # Fall back to defaults
             # Special case OAUTH2_SERVER_CLASS - if not specified, and OIDC is
             # enabled, use the OIDC_SERVER_CLASS setting instead
-            if attr == "OAUTH2_SERVER_CLASS" and self.OIDC_ENABLED:
-                val = self.defaults["OIDC_SERVER_CLASS"]
+            if attr == "OIDC_ISS_ENDPOINT" and not self.user_settings.get("OIDC_ISS_ENDPOINT"):
+                val = self.defaults["OIDC_ISS_ENDPOINT"]
+            elif attr == "OAUTH2_SERVER_CLASS" and self.OIDC_ENABLED:
+                val = self.defaults["OIDC_SERVER_CLASS"] 
             else:
                 val = self.defaults[attr]
 
