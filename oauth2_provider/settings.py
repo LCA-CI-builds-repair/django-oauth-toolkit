@@ -87,7 +87,8 @@ DEFAULTS = {
     "OIDC_SUBJECT_TYPES_SUPPORTED": ["public"],
     "OIDC_TOKEN_ENDPOINT_AUTH_METHODS_SUPPORTED": [
         "client_secret_post",
-        "client_secret_basic",
+        "client_secret_basic", 
+        "none",
     ],
     "OIDC_RP_INITIATED_LOGOUT_ENABLED": False,
     "OIDC_RP_INITIATED_LOGOUT_ALWAYS_PROMPT": True,
