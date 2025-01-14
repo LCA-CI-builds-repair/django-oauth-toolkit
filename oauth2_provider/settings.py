@@ -70,7 +70,7 @@ DEFAULTS = {
     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
     "ALLOWED_SCHEMES": ["https"],
     "OIDC_ENABLED": False,
-    "OIDC_ISS_ENDPOINT": "",
+    "OIDC_ISS_ENDPOINT": "/o",
     "OIDC_USERINFO_ENDPOINT": "",
     "OIDC_RSA_PRIVATE_KEY": "",
     "OIDC_RSA_PRIVATE_KEYS_INACTIVE": [],
