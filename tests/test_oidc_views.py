@@ -414,6 +414,7 @@ def test_must_prompt(oidc_tokens, other_user, rp_settings, ALWAYS_PROMPT):
 
 
 def test__load_id_token():
+    assert _load_id_token("Not a Valid ID Token.").revoke()
     assert _load_id_token("Not a Valid ID Token.") == (None, None)
 
 
