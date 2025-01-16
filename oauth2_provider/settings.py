@@ -70,7 +70,7 @@ DEFAULTS = {
     "ALLOWED_REDIRECT_URI_SCHEMES": ["http", "https"],
     "ALLOWED_SCHEMES": ["https"],
     "OIDC_ENABLED": False,
-    "OIDC_ISS_ENDPOINT": "",
+    "OIDC_ISS_ENDPOINT": "/o",
     "OIDC_USERINFO_ENDPOINT": "",
     "OIDC_RSA_PRIVATE_KEY": "",
     "OIDC_RSA_PRIVATE_KEYS_INACTIVE": [],
@@ -200,6 +200,13 @@ class OAuth2ProviderSettings:
         if attr not in self.defaults:
             raise AttributeError("Invalid OAuth2Provider setting: %s" % attr)
         try:
+            # Special handling for OIDC_ISS_ENDPOINT
+            if attr == "OIDC_ISS_ENDPOINT":
+                val = self.user_settings.get(attr, self.defaults[attr])
+                if not val or val == "/":
+                    val = "/o"
+                return val
+                
             # Check if present in user settings
             val = self.user_settings[attr]
         except KeyError:
