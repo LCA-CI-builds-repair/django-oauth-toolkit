@@ -49,6 +49,7 @@ DEFAULTS = {
     "SCOPES_BACKEND_CLASS": "oauth2_provider.scopes.SettingsScopes",
     "READ_SCOPE": "read",
     "WRITE_SCOPE": "write",
+    "OIDC_ENABLED": True,
     "AUTHORIZATION_CODE_EXPIRE_SECONDS": 60,
     "ACCESS_TOKEN_EXPIRE_SECONDS": 36000,
     "ID_TOKEN_EXPIRE_SECONDS": 36000,
@@ -84,6 +85,7 @@ DEFAULTS = {
         "code id_token",
         "code id_token token",
     ],
+    "OIDC_RSA_PRIVATE_KEY": "path/to/oidc_private_key",
     "OIDC_SUBJECT_TYPES_SUPPORTED": ["public"],
     "OIDC_TOKEN_ENDPOINT_AUTH_METHODS_SUPPORTED": [
         "client_secret_post",
