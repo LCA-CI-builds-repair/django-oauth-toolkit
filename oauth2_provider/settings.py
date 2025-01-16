@@ -75,6 +75,7 @@ DEFAULTS = {
     "OIDC_RSA_PRIVATE_KEY": "",
     "OIDC_RSA_PRIVATE_KEYS_INACTIVE": [],
     "OIDC_JWKS_MAX_AGE_SECONDS": 3600,
+    "OIDC_BASE_PATH": "o",  # Base path for OIDC URLs
     "OIDC_RESPONSE_TYPES_SUPPORTED": [
         "code",
         "token",
