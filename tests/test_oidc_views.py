@@ -454,6 +454,7 @@ def test_rp_initiated_logout_get_id_token_redirect(logged_in_client, oidc_tokens
     rsp = logged_in_client.get(
         reverse("oauth2_provider:rp-initiated-logout"),
         data={"id_token_hint": oidc_tokens.id_token, "post_logout_redirect_uri": "http://example.org"},
+        {"id_token_hint": oidc_tokens.id_token, "post_logout_redirect_uri": "http://example.org"},
     )
     assert rsp.status_code == 302
     assert rsp["Location"] == "http://example.org"
@@ -482,6 +483,7 @@ def test_rp_initiated_logout_get_id_token_missmatch_client_id(
     rsp = logged_in_client.get(
         reverse("oauth2_provider:rp-initiated-logout"),
         data={"id_token_hint": oidc_tokens.id_token, "client_id": public_application.client_id},
+        {"id_token_hint": oidc_tokens.id_token, "client_id": public_application.client_id},
     )
     assert rsp.status_code == 400
     assert is_logged_in(logged_in_client)
