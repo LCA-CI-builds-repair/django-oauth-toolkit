@@ -89,6 +89,7 @@ DEFAULTS = {
         "client_secret_post",
         "client_secret_basic",
     ],
+    "OIDC_ISS_ENDPOINT": "http://testserver/o",
     "OIDC_RP_INITIATED_LOGOUT_ENABLED": False,
     "OIDC_RP_INITIATED_LOGOUT_ALWAYS_PROMPT": True,
     "OIDC_RP_INITIATED_LOGOUT_STRICT_REDIRECT_URIS": False,
