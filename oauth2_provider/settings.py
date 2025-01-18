@@ -72,6 +72,7 @@ DEFAULTS = {
     "OIDC_ENABLED": False,
     "OIDC_ISS_ENDPOINT": "",
     "OIDC_USERINFO_ENDPOINT": "",
+    "BASE_URL_PATH": "o",  # Base path for OAuth2/OIDC endpoints
     "OIDC_RSA_PRIVATE_KEY": "",
     "OIDC_RSA_PRIVATE_KEYS_INACTIVE": [],
     "OIDC_JWKS_MAX_AGE_SECONDS": 3600,
