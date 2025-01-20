@@ -71,6 +71,7 @@ DEFAULTS = {
     "ALLOWED_SCHEMES": ["https"],
     "OIDC_ENABLED": False,
     "OIDC_ISS_ENDPOINT": "",
+   "OIDC_ISS_ENDPOINT": "http://testserver/o",
     "OIDC_USERINFO_ENDPOINT": "",
     "OIDC_RSA_PRIVATE_KEY": "",
     "OIDC_RSA_PRIVATE_KEYS_INACTIVE": [],
